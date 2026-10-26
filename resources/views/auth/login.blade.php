@@ -26,7 +26,7 @@
 
       <div class="form-group">
         <label class="form-label" for="password">Password</label>
-        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" value="admin123" placeholder="••••••••" required>
+        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="••••••••" required>
         @error('password')
           <span class="invalid-feedback">{{ $message }}</span>
         @enderror
@@ -45,7 +45,7 @@
     </form>
 
     <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #e2e8f0; font-size: 0.8125rem; color: #64748b;">
-      <strong>Akun Pengguna Default:</strong>
+      <strong>Akun Uji Coba Demo (Seeder):</strong>
       <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
         <li>Admin/Owner: <code>admin</code> / <code>admin123</code> (Hak Akses Penuh)</li>
         <li>Staff: <code>staff</code> / <code>staff123</code> (Transaksi Pembelian &amp; Penjualan)</li>
@@ -54,3 +54,5 @@
   </div>
 </div>
 @endsection
+
+

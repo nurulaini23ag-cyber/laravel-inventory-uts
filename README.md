@@ -29,17 +29,18 @@ Ketik perintah perpindahan direktori:
 cd C:\xampp\htdocs\inventory-laravel
 ```
 
-#### Langkah 4: Konfigurasi Environment Path PHP
-Agar terminal mengenali konfigurasi modul PHP lokal (`openssl`, `pdo_mysql`, dll.):
+#### Langkah 4: Konfigurasi Environment Path PHP *(Opsional)*
+Jika ekstensi PHP MySQL (`pdo_mysql` / `openssl`) belum aktif secara global di terminal Anda:
 
 - **Jika Menggunakan PowerShell:**
   ```powershell
-  $env:PHPRC = "C:\Users\nurul\php"
+  $env:PHPRC = "$env:USERPROFILE\php"
   ```
 - **Jika Menggunakan Command Prompt (CMD):**
   ```cmd
-  set PHPRC=C:\Users\nurul\php
+  set PHPRC=%USERPROFILE%\php
   ```
+*(Atau jika menggunakan PHP bawaan XAMPP, arahkan ke `C:\xampp\php`)*
 
 #### Langkah 5: Migrasi Database & Seeder Awal *(Cukup sekali saat awal setup)*
 Jika database belum terisi atau ingin me-reset ke kondisi awal:
@@ -50,7 +51,7 @@ php artisan migrate:fresh --seed
 #### Langkah 6: Jalankan Server Pengembangan Laravel
 Ketik perintah berikut untuk menyalakan server lokal:
 ```bash
-php artisan serve --no-reload
+php artisan serve
 ```
 Tunggu hingga muncul pesan informasi:
 ```text
@@ -88,11 +89,13 @@ Jika ingin cara yang paling praktis dan cepat:
 
 ---
 
-### 🔑 Kredensial Akun Login Default
+### 🔑 Kredensial Akun Percobaan (Demo & Penilaian Dosen)
 
-Sistem telah dilengkapi dengan dua akun bawaan untuk pengujian hak akses (*Role-Based Access Control*):
+> [!NOTE]
+> **PEMBERITAHUAN KEAMANAN & PRIVASI:**
+> Kredensial di bawah ini adalah **data tiruan (*dummy seeder*)** yang disediakan khusus untuk simulasi hak akses (*Role-Based Access Control*), pengujian lokal (*local development*), dan kemudahan penilaian saat ujian/demonstrasi dosen. Data ini **BUKAN** kata sandi atau akun pribadi pemilik sistem. Seluruh konfigurasi rahasia (*environment secrets*) pada file `.env` telah diamankan secara ketat oleh `.gitignore` dan tidak diunggah ke publik repository.
 
-| Peran (Role) | Username | Password | Cakupan Hak Akses |
+| Peran (Role) | Username Demo | Password Demo | Cakupan Hak Akses |
 |---|---|---|---|
 | **Admin / Owner** | `admin` | `admin123` | **Akses Penuh**: Kelola master produk (tambah, edit, hapus), kategori, supplier, transaksi pembelian barang masuk (PO), kasir penjualan, pembatalan transaksi (*cancel* & *reversal* stok), manajemen pengguna (*user management*), dan audit log mutasi stok. |
 | **Staff / Kasir** | `staff` | `staff123` | **Akses Operasional**: Melihat katalog produk, transaksi kasir penjualan (POS), melihat riwayat faktur transaksi, dan melihat riwayat audit stok. *(Dibatasi: Tidak dapat menambah/mengedit master produk, dilarang membatalkan transaksi, dan tidak dapat mengelola akun pengguna)*. |
@@ -360,7 +363,7 @@ Seluruh proses fungsionalitas dan integritas transaksi telah diuji secara kompre
 
 Untuk menjalankan kembali pengujian kapan pun:
 ```powershell
-$env:PHPRC = "C:\Users\nurul\php"; php artisan test
+php artisan test
 ```
 
 ---
@@ -435,7 +438,8 @@ inventory-laravel/
 ├── tests/
 │   └── Feature/
 │       └── InventorySystemTest.php            # Test suite 11 skenario pengujian
-├── .env                                       # Konfigurasi environment
+├── .env.example                               # Template konfigurasi environment (bebas dari data rahasia)
+├── .env                                       # Konfigurasi lokal (otomatis diproteksi .gitignore, tidak di-push)
 ├── run_server.bat                             # Skrip otomatis 1-klik di Windows
 └── README.md                                  # Dokumentasi komprehensif sistem
 ```

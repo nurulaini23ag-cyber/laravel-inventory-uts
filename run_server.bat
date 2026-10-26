@@ -9,9 +9,14 @@ echo   Inventory & Sales Management System (Enterprise POS & Stock)
 echo ===================================================================
 echo.
 
-:: 1. Daftarkan path PHP dan konfigurasi PHPRC
-set "PHPRC=C:\Users\nurul\php"
-set "PATH=C:\Program Files\php-8.5.7;C:\Users\nurul\php;%PATH%"
+:: 1. Daftarkan path PHP dan konfigurasi PHPRC secara portabel
+if exist "%USERPROFILE%\php\php.ini" set "PHPRC=%USERPROFILE%\php"
+if exist "C:\xampp\php\php.ini" if not defined PHPRC set "PHPRC=C:\xampp\php"
+if exist "%~dp0php.ini" if not defined PHPRC set "PHPRC=%~dp0"
+
+if exist "C:\Program Files\php-8.5.7" set "PATH=C:\Program Files\php-8.5.7;%PATH%"
+if exist "%USERPROFILE%\php" set "PATH=%USERPROFILE%\php;%PATH%"
+if exist "C:\xampp\php" set "PATH=C:\xampp\php;%PATH%"
 
 :: 2. Cek apakah MySQL sudah berjalan, jika belum jalankan otomatis
 echo [1/3] Memeriksa database MySQL (port 3306)...
