@@ -127,7 +127,22 @@ Jika ingin cara yang paling praktis dan cepat:
    - Tabel transaksi penjualan terakhir dan aksi cepat *restock*.
 
 2. **Manajemen Master Data Terintegrasi**:
-   - **Produk**: Dilengkapi kode SKU unik, nama, kategori, harga beli modal (HPP / *purchase price*), harga jual konsumen (*selling price*), stok aktual, dan ambang batas stok minimum.
+   - **Produk (Katalog 10 Item Aksesoris & Periferal Laptop)**:
+     Sistem telah diinisialisasi dengan tepat 10 produk fokus aksesoris dan periferal laptop:
+     
+     | No | SKU | Nama Produk | Kategori | Harga Beli | Harga Jual | Stok Awal | Min. Stok |
+     |:--:|:---:|:---|:---|:---:|:---:|:---:|:---:|
+     | 1 | `KB-001` | Keyboard Mekanikal Gaming RGB | Periferal Komputer | Rp 350.000 | Rp 450.000 | 15 | 5 |
+     | 2 | `KB-002` | Keyboard Wireless Slim Portable | Periferal Komputer | Rp 180.000 | Rp 245.000 | 20 | 5 |
+     | 3 | `MS-001` | Mouse Wireless Silent Click | Periferal Komputer | Rp 85.000 | Rp 125.000 | 25 | 8 |
+     | 4 | `MS-002` | Mouse Gaming RGB Ergonomis | Periferal Komputer | Rp 150.000 | Rp 210.000 | 18 | 5 |
+     | 5 | `ACC-001` | Stand Laptop Aluminium Adjustable | Aksesoris Laptop | Rp 120.000 | Rp 175.000 | 12 | 4 |
+     | 6 | `ACC-002` | Cooling Pad Laptop RGB Dual Fan | Aksesoris Laptop | Rp 110.000 | Rp 160.000 | 10 | 4 |
+     | 7 | `ACC-003` | USB Type-C Hub Multiport 6-in-1 | Aksesoris Laptop | Rp 195.000 | Rp 275.000 | 14 | 5 |
+     | 8 | `PROT-001` | Sleeve Case Pelindung Laptop 14 Inch | Pelindung & Proteksi Laptop | Rp 75.000 | Rp 115.000 | 20 | 6 |
+     | 9 | `PROT-002` | Anti Gores Layar Laptop 14 Inch (Screen Protector) | Pelindung & Proteksi Laptop | Rp 35.000 | Rp 60.000 | 30 | 10 |
+     | 10 | `PROT-003` | Pelindung Keyboard Silikon Universal | Pelindung & Proteksi Laptop | Rp 25.000 | Rp 45.000 | 28 | 10 |
+
    - **Kategori**: Pengelompokan produk dengan proteksi pencegahan hapus (*foreign key restrict*) jika masih memiliki produk aktif.
    - **Supplier**: Buku kontak pemasok barang dengan nomor telepon, email, dan alamat fisik. Terproteksi dari penghapusan jika memiliki riwayat pengadaan.
    - **Pencarian, Filter, & Sorting**: Pencarian multi-kolom (nama & SKU), filter kategori, filter status stok menipis, serta sorting dinamis berbasis harga, stok, atau nama produk.

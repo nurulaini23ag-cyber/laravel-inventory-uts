@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Seeders;
 
 use App\Models\Category;
@@ -22,7 +21,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1.  Seed Users (Admin/Owner dan Staff)
+        // 1. Seed Users (Admin/Owner dan Staff)
         $admin = User::firstOrCreate(
             ['email' => 'admin@inventory.com'],
             [
@@ -43,21 +42,21 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2.  Seed Categories
-        $catElectronics = Category::firstOrCreate(
-            ['name' => 'Elektronik'],
-            ['description' => 'Peralatan dan peranti elektronik kantor dan rumah']
+        // 2. Seed Kategori Khusus Aksesoris & Periferal Laptop
+        $catPeripherals = Category::firstOrCreate(
+            ['name' => 'Periferal Komputer'],
+            ['description' => 'Keyboard, mouse, dan perangkat input komputer/laptop']
         );
         $catAccessories = Category::firstOrCreate(
-            ['name' => 'Aksesoris Komputer'],
-            ['description' => 'Perlengkapan pendukung PC, Laptop, dan periferal']
+            ['name' => 'Aksesoris Laptop'],
+            ['description' => 'Perlengkapan pendukung operasional dan produktivitas laptop']
         );
-        $catStationery = Category::firstOrCreate(
-            ['name' => 'Alat Tulis Kantor'],
-            ['description' => 'Kebutuhan administrasi dan operasional kantor']
+        $catProtection = Category::firstOrCreate(
+            ['name' => 'Pelindung & Proteksi Laptop'],
+            ['description' => 'Perlindungan fisik laptop: case, screen protector, dan keyboard cover']
         );
 
-        // 3.  Seed Suppliers
+        // 3. Seed Suppliers
         $supplier1 = Supplier::firstOrCreate(
             ['name' => 'PT Tech Distro Utama'],
             [
@@ -67,141 +66,210 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $supplier2 = Supplier::firstOrCreate(
-            ['name' => 'CV Stationary Abadi'],
+            ['name' => 'CV Surya Proteksi Komputer'],
             [
                 'contact_info' => 'Siti Rahma',
                 'phone'        => '08987654321',
-                'email'        => 'sales@stationaryabadi.com',
+                'email'        => 'sales@suryaproteksi.com',
             ]
         );
 
-        // 4.  Seed Products dengan purchase_price & selling_price
-        $p1 = Product::firstOrCreate(
-            ['sku' => 'ELEC-001'],
+        // 4. Seed TEPAT 10 PRODUK (Keyboard, Mouse, Aksesoris Laptop, Pelindung, Anti Gores)
+        $productsData = [
+            // 1 & 2: Keyboard
             [
-                'category_id'    => $catElectronics->id,
-                'name'           => 'Monitor Gaming 24 Inch',
-                'purchase_price' => 1850000.00,
-                'selling_price'  => 2250000.00,
+                'sku'            => 'KB-001',
+                'category_id'    => $catPeripherals->id,
+                'name'           => 'Keyboard Mekanikal Gaming RGB',
+                'purchase_price' => 350000.00,
+                'selling_price'  => 450000.00,
                 'stock'          => 15,
                 'minimum_stock'  => 5,
-            ]
-        );
-        $p2 = Product::firstOrCreate(
-            ['sku' => 'ACC-001'],
+                'supplier_id'    => $supplier1->id,
+            ],
             [
-                'category_id'    => $catAccessories->id,
-                'name'           => 'Keyboard Mekanikal RGB',
-                'purchase_price' => 380000.00,
-                'selling_price'  => 475000.00,
-                'stock'          => 8,
+                'sku'            => 'KB-002',
+                'category_id'    => $catPeripherals->id,
+                'name'           => 'Keyboard Wireless Slim Portable',
+                'purchase_price' => 180000.00,
+                'selling_price'  => 245000.00,
+                'stock'          => 20,
                 'minimum_stock'  => 5,
-            ]
-        );
-        $p3 = Product::firstOrCreate(
-            ['sku' => 'ACC-002'],
+                'supplier_id'    => $supplier1->id,
+            ],
+            // 3 & 4: Mouse
             [
-                'category_id'    => $catAccessories->id,
-                'name'           => 'Mouse Wireless Silent',
-                'purchase_price' => 95000.00,
-                'selling_price'  => 135000.00,
+                'sku'            => 'MS-001',
+                'category_id'    => $catPeripherals->id,
+                'name'           => 'Mouse Wireless Silent Click',
+                'purchase_price' => 85000.00,
+                'selling_price'  => 125000.00,
                 'stock'          => 25,
-                'minimum_stock'  => 10,
-            ]
-        );
-        $p4 = Product::firstOrCreate(
-            ['sku' => 'ATK-001'],
-            [
-                'category_id'    => $catStationery->id,
-                'name'           => 'Kertas HVS A4 80gr (Ream)',
-                'purchase_price' => 40000.00,
-                'selling_price'  => 52000.00,
-                'stock'          => 3,
                 'minimum_stock'  => 8,
-            ]
-        );
+                'supplier_id'    => $supplier1->id,
+            ],
+            [
+                'sku'            => 'MS-002',
+                'category_id'    => $catPeripherals->id,
+                'name'           => 'Mouse Gaming RGB Ergonomis',
+                'purchase_price' => 150000.00,
+                'selling_price'  => 210000.00,
+                'stock'          => 18,
+                'minimum_stock'  => 5,
+                'supplier_id'    => $supplier1->id,
+            ],
+            // 5, 6 & 7: Aksesoris Laptop
+            [
+                'sku'            => 'ACC-001',
+                'category_id'    => $catAccessories->id,
+                'name'           => 'Stand Laptop Aluminium Adjustable',
+                'purchase_price' => 120000.00,
+                'selling_price'  => 175000.00,
+                'stock'          => 12,
+                'minimum_stock'  => 4,
+                'supplier_id'    => $supplier1->id,
+            ],
+            [
+                'sku'            => 'ACC-002',
+                'category_id'    => $catAccessories->id,
+                'name'           => 'Cooling Pad Laptop RGB Dual Fan',
+                'purchase_price' => 110000.00,
+                'selling_price'  => 160000.00,
+                'stock'          => 10,
+                'minimum_stock'  => 4,
+                'supplier_id'    => $supplier1->id,
+            ],
+            [
+                'sku'            => 'ACC-003',
+                'category_id'    => $catAccessories->id,
+                'name'           => 'USB Type-C Hub Multiport 6-in-1',
+                'purchase_price' => 195000.00,
+                'selling_price'  => 275000.00,
+                'stock'          => 14,
+                'minimum_stock'  => 5,
+                'supplier_id'    => $supplier1->id,
+            ],
+            // 8: Pelindung Laptop
+            [
+                'sku'            => 'PROT-001',
+                'category_id'    => $catProtection->id,
+                'name'           => 'Sleeve Case Pelindung Laptop 14 Inch',
+                'purchase_price' => 75000.00,
+                'selling_price'  => 115000.00,
+                'stock'          => 20,
+                'minimum_stock'  => 6,
+                'supplier_id'    => $supplier2->id,
+            ],
+            // 9: Anti Gores Laptop
+            [
+                'sku'            => 'PROT-002',
+                'category_id'    => $catProtection->id,
+                'name'           => 'Anti Gores Layar Laptop 14 Inch (Screen Protector)',
+                'purchase_price' => 35000.00,
+                'selling_price'  => 60000.00,
+                'stock'          => 30,
+                'minimum_stock'  => 10,
+                'supplier_id'    => $supplier2->id,
+            ],
+            // 10: Pelindung Keyboard
+            [
+                'sku'            => 'PROT-003',
+                'category_id'    => $catProtection->id,
+                'name'           => 'Pelindung Keyboard Silikon Universal',
+                'purchase_price' => 25000.00,
+                'selling_price'  => 45000.00,
+                'stock'          => 28,
+                'minimum_stock'  => 10,
+                'supplier_id'    => $supplier2->id,
+            ],
+        ];
 
-        // Many-to-many suppliers
-        $p1->suppliers()->syncWithoutDetaching([$supplier1->id => ['supplier_price' => 1850000.00]]);
-        $p2->suppliers()->syncWithoutDetaching([$supplier1->id => ['supplier_price' => 380000.00]]);
-        $p3->suppliers()->syncWithoutDetaching([$supplier1->id => ['supplier_price' => 95000.00]]);
-        $p4->suppliers()->syncWithoutDetaching([$supplier2->id => ['supplier_price' => 40000.00]]);
+        $createdProducts = [];
+        foreach ($productsData as $data) {
+            $supplierId = $data['supplier_id'];
+            unset($data['supplier_id']);
 
-        // 5.  Seed Transaksi Pembelian (Purchases & Items)
+            $product = Product::firstOrCreate(['sku' => $data['sku']], $data);
+            $product->suppliers()->syncWithoutDetaching([$supplierId => ['supplier_price' => $data['purchase_price']]]);
+            $createdProducts[$product->sku] = $product;
+        }
+
+        // 5. Seed Transaksi Pembelian Awal (Purchase Order)
+        $pKb1 = $createdProducts['KB-001'];
+        $pMs1 = $createdProducts['MS-001'];
+
         $purchase1 = Purchase::firstOrCreate(
             ['purchase_number' => 'PO-202610-0001'],
             [
                 'supplier_id'  => $supplier1->id,
                 'user_id'      => $admin->id,
-                'total'        => (1850000 * 5) + (380000 * 10),
+                'total'        => (350000 * 5) + (85000 * 10),
                 'status'       => 'completed',
                 'purchased_at' => now()->subDays(3),
-                'notes'        => 'Pengadaan stok awal kuartal',
+                'notes'        => 'Pengadaan stok awal aksesoris laptop & periferal',
             ]
         );
         PurchaseItem::firstOrCreate([
             'purchase_id' => $purchase1->id,
-            'product_id'  => $p1->id,
+            'product_id'  => $pKb1->id,
         ], [
             'quantity'   => 5,
-            'unit_cost'  => 1850000.00,
-            'subtotal'   => 1850000.00 * 5,
+            'unit_cost'  => 350000.00,
+            'subtotal'   => 350000.00 * 5,
         ]);
         PurchaseItem::firstOrCreate([
             'purchase_id' => $purchase1->id,
-            'product_id'  => $p2->id,
+            'product_id'  => $pMs1->id,
         ], [
             'quantity'   => 10,
-            'unit_cost'  => 380000.00,
-            'subtotal'   => 380000.00 * 10,
+            'unit_cost'  => 85000.00,
+            'subtotal'   => 85000.00 * 10,
         ]);
 
-        // 6.  Seed Transaksi Penjualan (Sales & Items)
+        // 6. Seed Transaksi Penjualan Awal (Kasir POS)
+        $pProt1 = $createdProducts['PROT-001'];
+
         $sale1 = Sale::firstOrCreate(
             ['sale_number' => 'INV-202610-0001'],
             [
                 'user_id'  => $staff->id,
-                'total'    => (475000 * 2) + (135000 * 3),
+                'total'    => (450000 * 1) + (115000 * 1),
                 'status'   => 'completed',
                 'sold_at'  => now()->subDays(1),
-                'notes'    => 'Penjualan ritel toko',
+                'notes'    => 'Penjualan ritel keyboard & pelindung laptop',
             ]
         );
         SaleItem::firstOrCreate([
             'sale_id'    => $sale1->id,
-            'product_id' => $p2->id,
+            'product_id' => $pKb1->id,
         ], [
-            'quantity'   => 2,
-            'unit_price' => 475000.00,
-            'subtotal'   => 475000.00 * 2,
+            'quantity'   => 1,
+            'unit_price' => 450000.00,
+            'subtotal'   => 450000.00 * 1,
         ]);
         SaleItem::firstOrCreate([
             'sale_id'    => $sale1->id,
-            'product_id' => $p3->id,
+            'product_id' => $pProt1->id,
         ], [
-            'quantity'   => 3,
-            'unit_price' => 135000.00,
-            'subtotal'   => 135000.00 * 3,
+            'quantity'   => 1,
+            'unit_price' => 115000.00,
+            'subtotal'   => 115000.00 * 1,
         ]);
 
-        // Audit Trail Movements
+        // 7. Audit Trail Riwayat Mutasi Stok
         StockMovement::firstOrCreate([
-            'product_id' => $p1->id,
+            'product_id' => $pKb1->id,
             'user_id'    => $admin->id,
             'type'       => 'IN',
             'quantity'   => 15,
-            'notes'      => 'Pembelian stok awal PO-202610-0001',
+            'notes'      => 'Pengadaan awal PO-202610-0001',
         ]);
         StockMovement::firstOrCreate([
-            'product_id' => $p2->id,
+            'product_id' => $pKb1->id,
             'user_id'    => $staff->id,
             'type'       => 'OUT',
-            'quantity'   => 2,
+            'quantity'   => 1,
             'notes'      => 'Penjualan kasir INV-202610-0001',
         ]);
-
-        // 7. Seed Tambahan Dummy Kategori & Produk Realistic
-        Category::factory(4)->create();
-        Product::factory(25)->create();
     }
 }
