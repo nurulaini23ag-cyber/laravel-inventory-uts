@@ -5,152 +5,85 @@ Aplikasi berbasis web terpadu untuk pengelolaan inventaris barang, pengadaan sto
 
 ---
 
-## ⚙️ REQUIREMENTS & PRASYARAT SISTEM
+## ⚡ CARA CEPAT MENJALANKAN APLIKASI
 
-Untuk menjalankan aplikasi ini secara optimal, pastikan lingkungan komputer memenuhi prasyarat berikut:
-* **PHP**: Versi `>= 8.2` (dengan ekstensi: `pdo_mysql`, `openssl`, `mbstring`, `curl`, `tokenizer`)
-* **Web Server**: Apache (XAMPP) atau Built-in PHP CLI Server (`php artisan serve`)
-* **Database**: MySQL Server (port default `3306`, collation `utf8mb4_unicode_ci`)
-* **Package Manager**: Composer `>= 2.x` dan Node.js / NPM
-* **Browser**: Google Chrome, Mozilla Firefox, Microsoft Edge, atau browser modern lainnya
+### 1. Nyalakan Database MySQL
+Buka **XAMPP Control Panel**, lalu klik tombol **Start** pada baris **MySQL** (pastikan menyala hijau di port `3306`).
 
 ---
 
-## ⚡ PANDUAN CARA MENJALANKAN APLIKASI (SESUAI SLIDE UTS & PERTEMUAN 5)
+### 2. Jalankan Aplikasi (Pilih Salah Satu Cara)
 
-Dokumentasi ini menyediakan dua panduan instalasi & eksekusi:
-1. **Panduan Langsung di Laptop Lokal (Proyek di folder `C:\xampp\htdocs\inventory-laravel`)**
-2. **Panduan Setup Reproducible dari Repository Bersih (Sesuai Persis Slide 21 Materi UTS)**
-
----
-
-### 💻 METODE 1: MENJALANKAN LANGSUNG DI LAPTOP LOKAL (XAMPP)
-
-Gunakan langkah ini saat demonstrasi/ujian langsung di depan dosen pada komputer yang sudah terpasang proyek ini:
-
-#### Langkah 1: Pastikan Database MySQL XAMPP Berjalan
-1. Buka aplikasi **XAMPP Control Panel**.
-2. Pada baris **MySQL**, klik tombol **Start**.
-3. Pastikan modul MySQL berwarna hijau dan berjalan pada port `3306`.
-
-#### Langkah 2: Buka Terminal (PowerShell atau Command Prompt)
-Tekan `Windows + R`, ketik `powershell` atau `cmd`, lalu tekan `Enter`.
-
-#### Langkah 3: Masuk ke Folder Proyek di `htdocs`
-```cmd
+#### Cara A: Mengetik di Terminal (Direkomendasikan)
+Buka Terminal (**Command Prompt** atau **PowerShell**), lalu jalankan perintah:
+```bash
 cd C:\xampp\htdocs\inventory-laravel
-```
-
-#### Langkah 4: Konfigurasi Environment Path PHP *(Opsional)*
-Jika ekstensi PHP MySQL (`pdo_mysql` / `openssl`) belum aktif secara global di terminal Anda:
-- **PowerShell:** `$env:PHPRC = "$env:USERPROFILE\php"`
-- **Command Prompt (CMD):** `set PHPRC=%USERPROFILE%\php`
-*(Atau jika menggunakan PHP bawaan XAMPP: arahkan ke `C:\xampp\php`)*
-
-#### Langkah 5: Migrasi Database & Seeder Awal *(Cukup sekali saat awal setup)*
-Jika database belum terisi atau ingin me-reset ke kondisi awal 10 produk:
-```bash
-php artisan migrate:fresh --seed
-```
-
-#### Langkah 6: Jalankan Server Pengembangan Laravel
-Ketik perintah berikut untuk menyalakan server lokal:
-```bash
 php artisan serve
 ```
-Tunggu hingga muncul pesan informasi di terminal:
-```text
-INFO Server running on [http://127.0.0.1:8000].
-Press Ctrl+C to stop the server
-```
+*(Tunggu hingga muncul tulisan `INFO Server running on [http://127.0.0.1:8000]`)*
 
-#### Langkah 7: Buka Aplikasi di Browser
+#### Cara B: Cukup 1-Klik Otomatis
+Buka folder `C:\xampp\htdocs\inventory-laravel` di File Explorer, lalu klik ganda (*double-click*) file **`run_server.bat`**. Server dan browser akan terbuka secara otomatis.
+
+---
+
+### 3. Buka di Browser
 Buka browser (Google Chrome, Microsoft Edge, atau Firefox), lalu akses alamat:
 👉 **`http://127.0.0.1:8000`**
 
-> [!IMPORTANT]
-> **PENTING:** Jangan menutup jendela terminal/CMD saat sedang menggunakan aplikasi. Jendela tersebut adalah mesin server web yang sedang aktif melayani request Anda.
+*(Catatan: Jika database belum pernah dimigrasi atau ingin mereset ke 10 produk awal, jalankan: `php artisan migrate:fresh --seed` sebelum `php artisan serve`)*
 
 ---
 
-### 🚀 METODE 2: PANDUAN SETUP REPRODUCIBLE (PERSIS SLIDE 21 UTS)
-
-Sesuai instruksi pada **Slide 21 Materi UTS Web Programming 2**, dosen atau penguji dapat menguji proyek ini dari repository baru yang bersih (*fresh clone*) dengan urutan perintah baku berikut:
-
+### 📥 Panduan Instalasi Awal (Jika Clone dari GitHub)
+Jika mengunduh atau menguji proyek ini dari repository GitHub baru yang bersih:
 ```bash
-# 1. Clone repository dari GitHub
+# 1. Clone repository
 git clone https://github.com/nurulaini23ag-cyber/laravel-inventory-uts.git
 
 # 2. Masuk ke folder proyek
 cd laravel-inventory-uts
 
-# 3. Install seluruh dependency package PHP
+# 3. Install paket dependency
 composer install
 
-# 4. Salin template konfigurasi environment
-cp .env.example .env
-# (Untuk pengguna Windows Command Prompt: copy .env.example .env)
+# 4. Buat file environment lokal
+copy .env.example .env
 
-# 5. Generate Application Key Laravel
+# 5. Generate Application Key
 php artisan key:generate
 
-# 6. Konfigurasi kredensial database pada file .env
-# Pastikan DB_CONNECTION=mysql, DB_PORT=3306, DB_DATABASE=inventory_db, DB_USERNAME=root
+# 6. Migrasi database dan isi data awal (10 produk)
+php artisan migrate:fresh --seed
 
-# 7. Jalankan migrasi tabel dan seeding data awal (10 produk & akun demo)
-php artisan migrate --seed
-
-# 8. Install dan build asset frontend (opsional/rekomendasi)
-npm install
-npm run build
-
-# 9. Jalankan web server Laravel
+# 7. Jalankan server
 php artisan serve
 ```
-Aplikasi langsung dapat diakses pada browser melalui alamat: **`http://127.0.0.1:8000`**.
 
 ---
 
-### 🌟 METODE 3: SKRIP OTOMATIS 1-KLIK (`run_server.bat`)
-Untuk kemudahan saat ujian tanpa perlu mengetik perintah:
-1. Buka folder `C:\xampp\htdocs\inventory-laravel`.
-2. Klik ganda (*double-click*) pada file: **`run_server.bat`**.
-3. Skrip otomatis menyalakan MySQL, membuka browser ke `http://127.0.0.1:8000`, dan menjalankan `php artisan serve`.
+### 🔑 Akun Login Pengguna
 
----
-
-### 🌐 METODE 4: MENJALANKAN VIA APACHE XAMPP
-Karena proyek berada di dalam folder `htdocs`, Anda juga dapat membukanya via Apache:
-1. Di XAMPP Control Panel, klik **Start** pada modul **Apache** dan **MySQL**.
-2. Buka browser ke alamat: **`http://localhost/inventory-laravel/public`**.
-
----
-
-### 🔑 Kredensial Akun Percobaan (Demo & Penilaian Dosen)
-
-> [!NOTE]
-> **PEMBERITAHUAN KEAMANAN & PRIVASI:**
-> Kredensial di bawah ini adalah **data tiruan (*dummy seeder*)** yang disediakan khusus untuk simulasi hak akses (*Role-Based Access Control*), pengujian lokal (*local development*), dan kemudahan penilaian saat ujian/demonstrasi dosen. Data ini **BUKAN** kata sandi atau akun pribadi pemilik sistem. Seluruh konfigurasi rahasia (*environment secrets*) pada file `.env` telah diamankan secara ketat oleh `.gitignore` dan tidak diunggah ke publik repository.
-
-| Peran (Role) | Username Demo | Password Demo | Cakupan Hak Akses |
+| Peran (Role) | Username | Password | Keterangan Hak Akses |
 |---|---|---|---|
-| **Admin / Owner** | `admin` | `admin123` | **Akses Penuh**: Kelola master produk (tambah, edit, hapus), kategori, supplier, transaksi pembelian barang masuk (PO), kasir penjualan, pembatalan transaksi (*cancel* & *reversal* stok), manajemen pengguna (*user management*), dan audit log mutasi stok. |
-| **Staff / Kasir** | `staff` | `staff123` | **Akses Operasional**: Melihat katalog produk, transaksi kasir penjualan (POS), melihat riwayat faktur transaksi, dan melihat riwayat audit stok. *(Dibatasi: Tidak dapat menambah/mengedit master produk, dilarang membatalkan transaksi, dan tidak dapat mengelola akun pengguna)*. |
+| **Admin / Owner** | `admin` | `admin123` | **Akses Penuh**: Master produk, kategori, supplier, pembelian barang, kasir penjualan, pembatalan transaksi, dan kelola user |
+| **Staff / Kasir** | `staff` | `staff123` | **Akses Operasional**: Katalog produk, kasir penjualan (POS), riwayat faktur, dan cetak struk |
 
 ---
 
-## 📑 DAFTAR ISI (SESUAI STRUKTUR SLIDE 20 UTS)
+## 📑 DAFTAR ISI
 
-1. [1. Project Overview & Latar Belakang](#-inventory--sales-management-system-laravel)
-2. [2. Requirements & Prasyarat Sistem](#-requirements--prasyarat-sistem)
-3. [3. Panduan Instalasi & Eksekusi (Termasuk Slide 21)](#-panduan-cara-menjalankan-aplikasi-sesuai-slide-uts--pertemuan-5)
-4. [4. Environment Setup & Keamanan (.env)](#-environment-setup--konfigurasi-env)
-5. [5. Database Migration & Seeding](#langkah-5-migrasi-database--seeder-awal-cukup-sekali-saat-awal-setup)
-6. [6. Demo Account & Matriks Hak Akses (RBAC)](#-kredensial-akun-percobaan-demo--penilaian-dosen)
-7. [7. Fitur Utama & Aturan Bisnis Stok](#-fitur-utama--modul-sistem)
-8. [8. Batasan Sistem (Known Limitations)](#-batasan-sistem-known-limitations)
+1. [Cara Cepat Menjalankan Aplikasi](#-cara-cepat-menjalankan-aplikasi)
+2. [Akun Login Pengguna](#-akun-login-pengguna)
+3. [Fitur Utama & Modul Sistem](#-fitur-utama--modul-sistem)
+4. [Arsitektur Sistem & Alur Bisnis](#-arsitektur-sistem--alur-bisnis)
+5. [Skema Database & Entity Relationship Diagram (ERD)](#-skema-database--entity-relationship-diagram-erd)
+6. [Matriks Peran & Hak Akses Pengguna (RBAC)](#-matriks-peran--hak-akses-pengguna-rbac)
+7. [Integritas Data, Concurrency, & Aturan Bisnis Stok](#-integritas-data-concurrency--aturan-bisnis-stok)
+8. [Daftar Endpoint Routing & HTTP Methods](#-daftar-endpoint-routing--http-methods)
 9. [Laporan Pengujian Otomatis (Feature Test Suite)](#-laporan-pengujian-otomatis-feature-test-suite)
 10. [Struktur Folder & Penempatan Kode](#-struktur-folder--penempatan-kode)
+11. [Batasan Sistem (Known Limitations)](#-batasan-sistem-known-limitations)
 
 ---
 
@@ -500,9 +433,9 @@ inventory-laravel/
 
 ## ⚠️ BATASAN SISTEM (KNOWN LIMITATIONS)
 
-Sesuai ruang lingkup dan batasan proyek yang telah ditentukan pada **Slide 4 Materi UTS Web Programming 2**:
+Ruang lingkup dan batasan fitur sistem ini mencakup:
 
-1. **Simulasi Transaksi Lokal**: Tidak menggunakan *Payment Gateway* perbankan pihak ketiga (seperti Midtrans/Xendit nyata). Transaksi kasir diselesaikan secara tunai langsung di tempat dengan verifikasi server, auto-potong stok, dan pencetakan struk kasir thermal POS 80mm siap cetak (`window.print()`).
-2. **Mata Uang Tunggal (Single Currency)**: Seluruh pencatatan harga dan transaksi beroperasi menggunakan mata uang Rupiah Indonesia (IDR / Rp) tanpa integrasi konversi valuta asing (*multi-currency*).
+1. **Simulasi Transaksi Kasir Lokal**: Tidak menggunakan *Payment Gateway* perbankan pihak ketiga (seperti Midtrans/Xendit nyata). Transaksi kasir diselesaikan secara langsung di toko dengan verifikasi server, auto-potong stok real-time, dan pencetakan struk kasir thermal POS 80mm siap cetak (`window.print()`).
+2. **Mata Uang Tunggal (Single Currency)**: Seluruh pencatatan harga dan transaksi beroperasi menggunakan mata uang Rupiah Indonesia (IDR / Rp) tanpa konversi valuta asing (*multi-currency*).
 3. **Satu Gudang Utama (Single Warehouse)**: Pengelolaan stok barang berfokus pada satu lokasi operasional toko/gudang utama tanpa fitur mutasi antar-cabang (*inter-warehouse transfer*).
-4. **Fokus Inti Konsistensi & Integritas**: Sesuai arahan pengampu mata kuliah, nilai utama sistem terletak pada **konsistensi stok**, pencegahan penjualan fiktif/minus (*zero-overselling*), transaksi atomik (`DB::transaction`), penguncian baris konkurensi (`Product::lockForUpdate()`), dan pembagian hak akses berlapis (*Role-Based Access Control*).
+4. **Fokus Inti Konsistensi & Integritas**: Nilai utama sistem terletak pada **konsistensi stok**, pencegahan penjualan fiktif/minus (*zero-overselling*), transaksi atomik (`DB::transaction`), penguncian baris konkurensi (`Product::lockForUpdate()`), dan pembagian hak akses berlapis (*Role-Based Access Control*).
