@@ -5,60 +5,46 @@ Aplikasi berbasis web terpadu untuk pengelolaan inventaris barang, pengadaan sto
 
 ---
 
-## ⚡ CARA CEPAT MENJALANKAN APLIKASI
+## ⚡ CARA MENJALANKAN APLIKASI (MANUAL)
 
-### 1. Nyalakan Database MySQL
-Buka **XAMPP Control Panel**, lalu klik tombol **Start** pada baris **MySQL** (pastikan menyala hijau di port `3306`).
+Ikuti langkah-langkah mudah di bawah ini untuk menjalankan aplikasi secara manual melalui terminal:
 
----
+### Langkah 1: Nyalakan MySQL di XAMPP
+1. Buka aplikasi **XAMPP Control Panel**.
+2. Klik tombol **Start** pada baris **MySQL** (pastikan menyala hijau di port `3306`).
 
-### 2. Jalankan Aplikasi (Pilih Salah Satu Cara)
-
-#### Cara A: Mengetik di Terminal (Direkomendasikan)
-Buka Terminal (**Command Prompt** atau **PowerShell**), lalu jalankan perintah:
+### Langkah 2: Buka Terminal & Masuk ke Folder Proyek
+Buka Terminal (**Command Prompt** atau **PowerShell**), lalu ketik:
 ```bash
 cd C:\xampp\htdocs\inventory-laravel
+```
+
+### Langkah 3: Migrasi Database & Seeder Awal *(Opsional)*
+Jika database belum terisi atau ingin me-reset data ke 10 produk awal:
+```bash
+php artisan migrate:fresh --seed
+```
+
+### Langkah 4: Jalankan Server Laravel
+Ketik perintah berikut untuk menyalakan server lokal:
+```bash
 php artisan serve
 ```
-*(Tunggu hingga muncul tulisan `INFO Server running on [http://127.0.0.1:8000]`)*
+Tunggu hingga muncul pesan informasi:
+```text
+INFO Server running on [http://127.0.0.1:8000].
+Press Ctrl+C to stop the server
+```
+*(Jangan tutup jendela terminal selama aplikasi digunakan)*
 
-#### Cara B: Cukup 1-Klik Otomatis
-Buka folder `C:\xampp\htdocs\inventory-laravel` di File Explorer, lalu klik ganda (*double-click*) file **`run_server.bat`**. Server dan browser akan terbuka secara otomatis.
-
----
-
-### 3. Buka di Browser
+### Langkah 5: Buka di Browser
 Buka browser (Google Chrome, Microsoft Edge, atau Firefox), lalu akses alamat:
 👉 **`http://127.0.0.1:8000`**
 
-*(Catatan: Jika database belum pernah dimigrasi atau ingin mereset ke 10 produk awal, jalankan: `php artisan migrate:fresh --seed` sebelum `php artisan serve`)*
-
 ---
 
-### 📥 Panduan Instalasi Awal (Jika Clone dari GitHub)
-Jika mengunduh atau menguji proyek ini dari repository GitHub baru yang bersih:
-```bash
-# 1. Clone repository
-git clone https://github.com/nurulaini23ag-cyber/laravel-inventory-uts.git
-
-# 2. Masuk ke folder proyek
-cd laravel-inventory-uts
-
-# 3. Install paket dependency
-composer install
-
-# 4. Buat file environment lokal
-copy .env.example .env
-
-# 5. Generate Application Key
-php artisan key:generate
-
-# 6. Migrasi database dan isi data awal (10 produk)
-php artisan migrate:fresh --seed
-
-# 7. Jalankan server
-php artisan serve
-```
+### 🌟 Pilihan Praktis: Jalankan 1-Klik Otomatis
+Selain cara manual di atas, Anda juga dapat menjalankan aplikasi cukup dengan klik dua kali (*double-click*) file **`run_server.bat`** di dalam folder `C:\xampp\htdocs\inventory-laravel`. Server dan browser akan menyala secara otomatis.
 
 ---
 
@@ -73,7 +59,7 @@ php artisan serve
 
 ## 📑 DAFTAR ISI
 
-1. [Cara Cepat Menjalankan Aplikasi](#-cara-cepat-menjalankan-aplikasi)
+1. [Cara Menjalankan Aplikasi (Manual)](#-cara-menjalankan-aplikasi-manual)
 2. [Akun Login Pengguna](#-akun-login-pengguna)
 3. [Fitur Utama & Modul Sistem](#-fitur-utama--modul-sistem)
 4. [Arsitektur Sistem & Alur Bisnis](#-arsitektur-sistem--alur-bisnis)
