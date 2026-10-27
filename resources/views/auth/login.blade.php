@@ -1,15 +1,13 @@
-
 @extends('layouts.app')
 
 @section('content')
-<div style="max-width: 440px; margin: 3rem auto;">
-  <div style="text-align: center; margin-bottom: 2rem;">
+<div style="max-width: 480px; margin: 2rem auto;">
+  <div style="text-align: center; margin-bottom: 1.5rem;">
     <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔐</div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-      <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0;">Masuk Sistem Inventaris</h1>
-
-    </div>
-    <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Autentikasi akun pengguna sistem (Admin / Staff)</p>
+    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0;">Masuk Sistem Inventaris &amp; Penjualan</h1>
+    <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">
+      Silakan masuk sesuai peran Anda (Admin, Staff, atau Customer)
+    </p>
   </div>
 
   <div class="card">
@@ -18,7 +16,7 @@
 
       <div class="form-group">
         <label class="form-label" for="login">Username atau Email</label>
-        <input type="text" name="login" id="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login', 'admin') }}" placeholder="admin / staff" required autofocus>
+        <input type="text" name="login" id="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login', 'admin') }}" placeholder="admin / staff / customer" required autofocus>
         @error('login')
           <span class="invalid-feedback">{{ $message }}</span>
         @enderror
@@ -44,15 +42,46 @@
       </button>
     </form>
 
-    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #e2e8f0; font-size: 0.8125rem; color: #64748b;">
-      <strong>Akun Uji Coba Demo (Seeder):</strong>
-      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
-        <li>Admin/Owner: <code>admin</code> / <code>admin123</code> (Hak Akses Penuh)</li>
-        <li>Staff: <code>staff</code> / <code>staff123</code> (Transaksi Pembelian &amp; Penjualan)</li>
-      </ul>
+    <!-- Tombol Daftar Pelanggan Baru -->
+    <div style="margin-top: 1.25rem; text-align: center; padding: 0.75rem; background: #f0fdf4; border-radius: 8px; border: 1px dashed #86efac; font-size: 0.875rem;">
+      <span style="color: #166534;">Pelanggan baru?</span>
+      <a href="{{ route('register') }}" style="color: #15803d; font-weight: 700; text-decoration: none; margin-left: 0.35rem;">
+        🛍️ Daftar Akun Customer Baru &rarr;
+      </a>
+    </div>
+
+    <!-- Informasi 3 Akun Demo Resmi: Admin, Staff, Customer -->
+    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.8125rem; color: #475569;">
+      <div style="font-weight: 700; margin-bottom: 0.65rem; color: #0f172a; display: flex; align-items: center; gap: 0.35rem;">
+        <span>🔑</span>
+        <span>3 Akun Login Resmi (Siap Digunakan Langsung):</span>
+      </div>
+      <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+        <tbody>
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 0.4rem 0;">
+              <span class="badge badge-danger" style="font-size: 0.65rem;">ADMIN</span>
+              <strong>Admin / Owner</strong>
+            </td>
+            <td style="padding: 0.4rem 0; font-family: monospace;"><code>admin</code> / <code>admin123</code></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 0.4rem 0;">
+              <span class="badge badge-info" style="font-size: 0.65rem;">STAFF</span>
+              <strong>Staff / Kasir</strong>
+            </td>
+            <td style="padding: 0.4rem 0; font-family: monospace;"><code>staff</code> / <code>staff123</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 0.4rem 0;">
+              <span class="badge" style="background: #059669; color: #fff; font-size: 0.65rem;">CUSTOMER</span>
+              <strong>Customer / Pelanggan</strong>
+            </td>
+            <td style="padding: 0.4rem 0; font-family: monospace;"><code>customer</code> / <code>customer123</code></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 @endsection
-
-

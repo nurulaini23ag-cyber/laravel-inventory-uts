@@ -29,7 +29,15 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="customer_name">Nama Pelanggan / Pembeli</label>
-          <input type="text" name="customer_name" id="customer_name" class="form-control @error('customer_name') is-invalid @enderror" value="{{ old('customer_name', 'Pelanggan Umum') }}" placeholder="Contoh: Budi Santoso / Pelanggan Umum">
+          <input type="text" name="customer_name" id="customer_name" list="customerList" class="form-control @error('customer_name') is-invalid @enderror" value="{{ old('customer_name', 'Pelanggan Umum') }}" placeholder="Pilih atau ketik nama pelanggan...">
+          <datalist id="customerList">
+            <option value="Pelanggan Umum (Walk-in)">
+            @if(isset($customers))
+              @foreach($customers as $c)
+                <option value="{{ $c->name }} ({{ $c->username }})">
+              @endforeach
+            @endif
+          </datalist>
           @error('customer_name')
             <span class="invalid-feedback">{{ $message }}</span>
           @enderror

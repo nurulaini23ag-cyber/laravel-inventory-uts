@@ -43,12 +43,22 @@ class DatabaseSeeder extends Seeder
         );
 
         $customerUser = User::firstOrCreate(
+            ['email' => 'customer@inventory.com'],
+            [
+                'name'     => 'Customer / Pelanggan',
+                'username' => 'customer',
+                'password' => Hash::make('customer123'),
+                'role'     => 'customer',
+            ]
+        );
+
+        User::firstOrCreate(
             ['email' => 'user@inventory.com'],
             [
                 'name'     => 'Budi (Pelanggan)',
                 'username' => 'user',
                 'password' => Hash::make('user123'),
-                'role'     => 'user',
+                'role'     => 'customer',
             ]
         );
 

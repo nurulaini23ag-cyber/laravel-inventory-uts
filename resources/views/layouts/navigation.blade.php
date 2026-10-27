@@ -9,7 +9,7 @@
       <div style="display: flex; gap: 0.5rem; font-size: 0.875rem; flex-wrap: wrap;">
         @auth
           @if(auth()->user()->isCustomer())
-            {{-- Menu Khusus Pelanggan / User --}}
+            {{-- Menu Khusus Customer / Pelanggan --}}
             <a href="{{ route('orders.catalog') }}" style="color: #cbd5e1; text-decoration: none; padding: 0.4rem 0.65rem; border-radius: 6px; {{ request()->routeIs('orders.catalog') ? 'background: #1e293b; color: #38bdf8; font-weight: 600;' : '' }}">🛍️ Katalog Produk</a>
             <a href="{{ route('orders.index') }}" style="color: #cbd5e1; text-decoration: none; padding: 0.4rem 0.65rem; border-radius: 6px; {{ request()->routeIs('orders.index', 'orders.show') ? 'background: #1e293b; color: #38bdf8; font-weight: 600;' : '' }}">📋 Pesanan Saya</a>
             <a href="{{ route('orders.create') }}" style="color: #cbd5e1; text-decoration: none; padding: 0.4rem 0.65rem; border-radius: 6px; {{ request()->routeIs('orders.create') ? 'background: #1e293b; color: #38bdf8; font-weight: 600;' : '' }}">➕ Pesan Barang</a>
@@ -32,7 +32,7 @@
             <a href="{{ route('stock.history') }}" style="color: #cbd5e1; text-decoration: none; padding: 0.4rem 0.65rem; border-radius: 6px; {{ request()->routeIs('stock.*') ? 'background: #1e293b; color: #38bdf8; font-weight: 600;' : '' }}">Audit Stok</a>
 
             @if(auth()->user()->isAdmin())
-              <a href="{{ route('users.index') }}" style="color: #fcd34d; text-decoration: none; padding: 0.4rem 0.65rem; border-radius: 6px; {{ request()->routeIs('users.*') ? 'background: #1e293b; color: #f59e0b; font-weight: 600;' : '' }}">Pengguna (User)</a>
+              <a href="{{ route('users.index') }}" style="color: #fcd34d; text-decoration: none; padding: 0.4rem 0.65rem; border-radius: 6px; {{ request()->routeIs('users.*') ? 'background: #1e293b; color: #f59e0b; font-weight: 600;' : '' }}">Pengguna &amp; Pelanggan</a>
             @endif
           @endif
         @endauth
@@ -45,7 +45,7 @@
           <span>👤</span>
           <strong>{{ auth()->user()->name }}</strong>
           <span style="font-size: 0.7rem; background: {{ auth()->user()->isAdmin() ? '#dc2626' : (auth()->user()->isStaff() ? '#2563eb' : '#059669') }}; color: #fff; padding: 1px 6px; border-radius: 4px; font-weight: 700;">
-            {{ strtoupper(auth()->user()->role) }}
+            {{ auth()->user()->isCustomer() ? 'CUSTOMER' : strtoupper(auth()->user()->role) }}
           </span>
         </span>
         <form action="{{ route('logout') }}" method="POST" style="margin: 0; display: inline;">
@@ -56,6 +56,7 @@
         </form>
       @else
         <a href="{{ route('login') }}" style="background: #2563eb; color: #fff; text-decoration: none; padding: 0.4rem 0.85rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500;">Login</a>
+        <a href="{{ route('register') }}" style="background: #059669; color: #fff; text-decoration: none; padding: 0.4rem 0.85rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500;">Daftar Pelanggan</a>
       @endauth
     </div>
   </div>

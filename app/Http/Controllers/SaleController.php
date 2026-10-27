@@ -52,7 +52,9 @@ class SaleController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('sales.create', compact('products'));
+                $customers = \App\Models\User::whereIn('role', ['user', 'customer'])->orderBy('name')->get();
+
+        return view('sales.create', compact('products', 'customers'));
     }
 
     /**

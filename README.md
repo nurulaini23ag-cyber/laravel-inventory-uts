@@ -56,7 +56,7 @@ Sistem menyediakan 3 akun dengan tingkatan hak akses yang terisolasi secara keta
 |---|---|---|---|
 | **Admin / Owner** | `admin` | `admin123` | **Akses Penuh**: Master produk, kategori, supplier, pembelian barang, kasir penjualan, konfirmasi pesanan, pembatalan transaksi, dan kelola user |
 | **Staff / Kasir** | `staff` | `staff123` | **Akses Operasional Kasir**: Kasir penjualan (POS), konfirmasi & tolak pesanan pelanggan, riwayat faktur, dan cetak struk |
-| **User / Pelanggan** | `user` | `user123` | **Akses Khusus Pemesanan**: Melihat katalog produk, membuat pesanan belanja mandiri, memantau status konfirmasi pesanan sendiri. **Seluruh data privat toko (omset, KPI, harga beli/modal, pembelian supplier, data user lain) 100% diproteksi dan tidak dapat diakses.** |
+| **Customer / Pelanggan** | `customer` (atau `user`) | `customer123` (atau `user123`) | **Akses Khusus Pemesanan**: Melihat katalog produk, membuat pesanan belanja mandiri, memantau status konfirmasi pesanan sendiri. **Seluruh data privat toko (omset, KPI, harga beli/modal, pembelian supplier, data user lain) 100% diproteksi dan tidak dapat diakses.** |
 
 ---
 
