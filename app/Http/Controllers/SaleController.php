@@ -1,13 +1,11 @@
 <?php
 
-
-
-
 namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\StockMovement;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -15,7 +13,7 @@ use Illuminate\Validation\ValidationException;
 class SaleController extends Controller
 {
     /**
-     *  Listing Penjualan dengan Search & Filter Tanggal
+     * Listing Penjualan dengan Search & Filter Tanggal
      */
     public function index(Request $request)
     {
@@ -23,6 +21,7 @@ class SaleController extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('sale_number', 'like', "%{$search}%")
+                      ->orWhere('customer_name', 'like', "%{$search}%")
                       ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%"));
                 });
             })
@@ -43,7 +42,7 @@ class SaleController extends Controller
     }
 
     /**
-     *  Form Tambah Penjualan (Multi-item)
+     * Form Tambah Penjualan Kasir (Multi-item)
      */
     public function create()
     {
@@ -52,20 +51,22 @@ class SaleController extends Controller
             ->orderBy('name')
             ->get();
 
-                $customers = \App\Models\User::whereIn('role', ['user', 'customer'])->orderBy('name')->get();
+        $customers = User::whereIn('role', ['user', 'customer'])
+            ->orderBy('name')
+            ->get();
 
         return view('sales.create', compact('products', 'customers'));
     }
 
     /**
-     *  Logika Transaksi Penjualan Lengkap
+     * Logika Transaksi Penjualan Kasir Lengkap (Anti-Overselling & Concurrency Protected)
      */
     public function store(Request $request)
     {
         $request->validate([
             'sold_at'            => ['required', 'date'],
-            'notes' => ['nullable', 'string', 'max:500'],
-            'customer_name' => ['nullable', 'string', 'max:100'],
+            'notes'              => ['nullable', 'string', 'max:500'],
+            'customer_name'      => ['nullable', 'string', 'max:100'],
             'items'              => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity'   => ['required', 'integer', 'min:1'],
@@ -76,12 +77,13 @@ class SaleController extends Controller
                 $saleNumber = 'INV-' . date('Ym') . '-' . strtoupper(substr(uniqid(), -5));
 
                 $sale = Sale::create([
-                    'user_id' => auth()->id(),
-                    'sale_number' => $saleNumber,
-                    'total'       => 0,
-                    'status'      => 'completed',
-                    'sold_at'     => $request->sold_at,
-                    'notes'       => $request->notes,
+                    'user_id'       => auth()->id(),
+                    'customer_name' => $request->input('customer_name') ?: 'Pelanggan Umum',
+                    'sale_number'   => $saleNumber,
+                    'total'         => 0,
+                    'status'        => 'completed',
+                    'sold_at'       => $request->sold_at,
+                    'notes'         => $request->notes,
                 ]);
 
                 $total = 0;
@@ -90,7 +92,7 @@ class SaleController extends Controller
                     $product = Product::lockForUpdate()->findOrFail($itemData['product_id']);
                     $qty = (int) $itemData['quantity'];
 
-                    //  Cek kuantitas dan kecukupan stok di server
+                    // Cek kuantitas dan kecukupan stok di server
                     if ($qty < 1 || $product->stock < $qty) {
                         throw ValidationException::withMessages([
                             'items' => "Stok produk '{$product->name}' tidak mencukupi! Tersedia: {$product->stock}, diminta: {$qty}."
@@ -114,7 +116,7 @@ class SaleController extends Controller
                     // Catat audit trail pergerakan stok
                     StockMovement::create([
                         'product_id' => $product->id,
-                        'user_id' => auth()->id(),
+                        'user_id'    => auth()->id(),
                         'type'       => 'OUT',
                         'quantity'   => $qty,
                         'notes'      => 'Penjualan ' . $saleNumber,
@@ -139,7 +141,7 @@ class SaleController extends Controller
     }
 
     /**
-     *  Detail Penjualan
+     * Detail Penjualan
      */
     public function show(Sale $sale)
     {
@@ -158,10 +160,6 @@ class SaleController extends Controller
         return view('sales.receipt', compact('sale'));
     }
 
-    /**
-     *  & 08: Pembatalan Penjualan oleh Admin
-     * Membatalkan transaksi dan mengembalikan stok produk yang sebelumnya terjual
-     */
     /**
      * Konfirmasi Pesanan Pelanggan oleh Kasir / Staff / Admin
      */
@@ -186,7 +184,7 @@ class SaleController extends Controller
 
                     StockMovement::create([
                         'product_id' => $product->id,
-                        'user_id' => auth()->id(),
+                        'user_id'    => auth()->id(),
                         'type'       => 'OUT',
                         'quantity'   => $item->quantity,
                         'notes'      => 'Konfirmasi Pesanan Kasir ' . $sale->sale_number,
@@ -225,6 +223,9 @@ class SaleController extends Controller
             ->with('success', "Pesanan {$sale->sale_number} telah ditolak.");
     }
 
+    /**
+     * Pembatalan Penjualan oleh Admin
+     */
     public function cancel(Sale $sale)
     {
         if ($sale->status === 'cancelled') {
@@ -239,7 +240,7 @@ class SaleController extends Controller
 
                 StockMovement::create([
                     'product_id' => $product->id,
-                    'user_id' => auth()->id(),
+                    'user_id'    => auth()->id(),
                     'type'       => 'IN',
                     'quantity'   => $item->quantity,
                     'notes'      => 'Pembatalan Penjualan ' . $sale->sale_number,
@@ -253,5 +254,3 @@ class SaleController extends Controller
             ->with('success', 'Transaksi penjualan berhasil dibatalkan dan stok produk telah dikembalikan.');
     }
 }
-
-
