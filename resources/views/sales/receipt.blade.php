@@ -258,6 +258,11 @@
                 <td>{{ $sale->user->name ?? 'Kasir Default' }}</td>
             </tr>
             <tr>
+                <td style="color: #6b7280;">Pelanggan</td>
+                <td>:</td>
+                <td>{{ $sale->customer_name ?: ($sale->user && $sale->user->isCustomer() ? $sale->user->name : 'Pelanggan Umum') }}</td>
+            </tr>
+            <tr>
                 <td style="color: #6b7280;">Status</td>
                 <td>:</td>
                 <td>
@@ -338,3 +343,4 @@
 
 </body>
 </html>
+

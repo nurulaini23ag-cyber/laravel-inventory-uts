@@ -62,7 +62,8 @@ class SaleController extends Controller
     {
         $request->validate([
             'sold_at'            => ['required', 'date'],
-            'notes'              => ['nullable', 'string', 'max:500'],
+            'notes' => ['nullable', 'string', 'max:500'],
+            'customer_name' => ['nullable', 'string', 'max:100'],
             'items'              => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity'   => ['required', 'integer', 'min:1'],
@@ -73,7 +74,7 @@ class SaleController extends Controller
                 $saleNumber = 'INV-' . date('Ym') . '-' . strtoupper(substr(uniqid(), -5));
 
                 $sale = Sale::create([
-                    'user_id'     => auth()->id(),
+                    'user_id' => auth()->id(),
                     'sale_number' => $saleNumber,
                     'total'       => 0,
                     'status'      => 'completed',
@@ -111,7 +112,7 @@ class SaleController extends Controller
                     // Catat audit trail pergerakan stok
                     StockMovement::create([
                         'product_id' => $product->id,
-                        'user_id'    => auth()->id(),
+                        'user_id' => auth()->id(),
                         'type'       => 'OUT',
                         'quantity'   => $qty,
                         'notes'      => 'Penjualan ' . $saleNumber,
@@ -159,6 +160,69 @@ class SaleController extends Controller
      *  & 08: Pembatalan Penjualan oleh Admin
      * Membatalkan transaksi dan mengembalikan stok produk yang sebelumnya terjual
      */
+    /**
+     * Konfirmasi Pesanan Pelanggan oleh Kasir / Staff / Admin
+     */
+    public function confirm(Sale $sale)
+    {
+        if ($sale->status !== 'pending') {
+            return back()->with('error', 'Hanya pesanan berstatus Pending yang dapat dikonfirmasi.');
+        }
+
+        try {
+            DB::transaction(function () use ($sale) {
+                foreach ($sale->items as $item) {
+                    $product = Product::lockForUpdate()->findOrFail($item->product_id);
+
+                    if ($product->stock < $item->quantity) {
+                        throw ValidationException::withMessages([
+                            'stock' => "Gagal konfirmasi: Stok produk '{$product->name}' tidak mencukupi (Tersedia: {$product->stock}, Dibutuhkan: {$item->quantity})."
+                        ]);
+                    }
+
+                    $product->decrement('stock', $item->quantity);
+
+                    StockMovement::create([
+                        'product_id' => $product->id,
+                        'user_id' => auth()->id(),
+                        'type'       => 'OUT',
+                        'quantity'   => $item->quantity,
+                        'notes'      => 'Konfirmasi Pesanan Kasir ' . $sale->sale_number,
+                    ]);
+                }
+
+                $sale->update(['status' => 'completed']);
+            });
+        } catch (ValidationException $ve) {
+            return back()->withErrors($ve->errors());
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('sales.show', $sale)
+            ->with('success', "Pesanan {$sale->sale_number} berhasil dikonfirmasi oleh kasir! Stok telah terpotong dan struk siap dicetak.");
+    }
+
+    /**
+     * Tolak Pesanan Pelanggan oleh Kasir
+     */
+    public function reject(Sale $sale, Request $request)
+    {
+        if ($sale->status !== 'pending') {
+            return back()->with('error', 'Hanya pesanan berstatus Pending yang dapat ditolak.');
+        }
+
+        $reason = $request->input('reason', 'Ditolak oleh kasir.');
+
+        $sale->update([
+            'status' => 'cancelled',
+            'notes'  => trim(($sale->notes ? $sale->notes . ' | ' : '') . 'Alasan Ditolak: ' . $reason),
+        ]);
+
+        return redirect()->route('sales.index')
+            ->with('success', "Pesanan {$sale->sale_number} telah ditolak.");
+    }
+
     public function cancel(Sale $sale)
     {
         if ($sale->status === 'cancelled') {
@@ -173,7 +237,7 @@ class SaleController extends Controller
 
                 StockMovement::create([
                     'product_id' => $product->id,
-                    'user_id'    => auth()->id(),
+                    'user_id' => auth()->id(),
                     'type'       => 'IN',
                     'quantity'   => $item->quantity,
                     'notes'      => 'Pembatalan Penjualan ' . $sale->sale_number,
@@ -187,3 +251,5 @@ class SaleController extends Controller
             ->with('success', 'Transaksi penjualan berhasil dibatalkan dan stok produk telah dikembalikan.');
     }
 }
+
+

@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
+            $table->string('customer_name')->nullable()->default('Pelanggan Umum');
             $table->string('sale_number')->unique();
             $table->decimal('total', 15, 2)->default(0);
             $table->string('status', 30)->default('completed'); // completed, cancelled
@@ -32,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('sales');
     }
 };
+

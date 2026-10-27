@@ -19,6 +19,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        if (auth()->check() && auth()->user()->isCustomer()) {
+            return redirect()->route('orders.catalog');
+        }
         $allowedSorts = ['name', 'sku', 'selling_price', 'purchase_price', 'stock', 'created_at'];
         $sortBy = in_array($request->sort, $allowedSorts) ? $request->sort : 'name';
         $sortOrder = in_array(strtolower($request->order), ['asc', 'desc']) ? strtolower($request->order) : 'asc';
@@ -175,3 +178,4 @@ class ProductController extends Controller
             ->with('success', 'Produk berhasil dihapus.');
     }
 }
+

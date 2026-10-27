@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('products.index');
+            return Auth::user()->isCustomer() ? redirect()->route('orders.index') : redirect()->route('dashboard');
         }
         return view('auth.login');
     }
@@ -26,7 +26,10 @@ class AuthController extends Controller
 
         if (Auth::attempt([$loginField => $credentials['login'], 'password' => $credentials['password']], $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('products.index'))
+            if (Auth::user()->isCustomer()) {
+                return redirect()->route('orders.index')->with('success', 'Selamat datang, ' . Auth::user()->name . '! Silakan melihat katalog atau riwayat pesanan Anda.');
+            }
+            return redirect()->intended(route('dashboard'))
                 ->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
         }
 
@@ -45,3 +48,4 @@ class AuthController extends Controller
             ->with('success', 'Anda telah berhasil logout.');
     }
 }
+

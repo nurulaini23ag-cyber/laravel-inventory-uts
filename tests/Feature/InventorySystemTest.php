@@ -286,4 +286,146 @@ class InventorySystemTest extends TestCase
         $response->assertSee('Barang Alpha Spesial');
         $response->assertDontSee('Barang Beta Biasa');
     }
+
+    /**
+     * 10. Role Pelanggan: User hanya bisa akses katalog dan pesanan sendiri
+     */
+    public function test_customer_can_access_catalog_and_orders()
+    {
+        $customer = User::factory()->create(['role' => 'user']);
+        $this->actingAs($customer);
+
+        $responseCatalog = $this->get(route('orders.catalog'));
+        $responseCatalog->assertStatus(200);
+
+        $responseOrders = $this->get(route('orders.index'));
+        $responseOrders->assertStatus(200);
+
+        $responseCreate = $this->get(route('orders.create'));
+        $responseCreate->assertStatus(200);
+    }
+
+    /**
+     * 11. Role Pelanggan: User tidak dapat mengakses data privat toko (dashboard, pembelian, supplier, users, sales)
+     */
+    public function test_customer_cannot_access_private_store_data()
+    {
+        $customer = User::factory()->create(['role' => 'user']);
+        $this->actingAs($customer);
+
+        // Dashboard dialihkan ke pesanan saya (tidak bisa intip KPI & omset)
+        $this->get(route('dashboard'))->assertRedirect(route('orders.index'));
+
+        // Menu privat toko mengembalikan 403 Forbidden
+        $this->get(route('purchases.index'))->assertStatus(403);
+        $this->get(route('categories.index'))->assertStatus(403);
+        $this->get(route('suppliers.index'))->assertStatus(403);
+        $this->get(route('users.index'))->assertStatus(403);
+        $this->get(route('stock.history'))->assertStatus(403);
+        $this->get(route('sales.index'))->assertStatus(403);
+    }
+
+    /**
+     * 12. Alur Pemesanan User: Status pesanan pending dan stok belum berkurang sampai kasir konfirmasi
+     */
+    public function test_customer_order_creates_pending_sale_without_decrementing_stock()
+    {
+        $customer = User::factory()->create(['role' => 'user', 'name' => 'Budi Santoso']);
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id'   => $category->id,
+            'stock'         => 20,
+            'selling_price' => 150000,
+        ]);
+
+        $this->actingAs($customer);
+
+        $response = $this->post(route('orders.store'), [
+            'notes' => 'Tolong packing rapi ya kak',
+            'items' => [
+                [
+                    'product_id' => $product->id,
+                    'quantity'   => 3,
+                ]
+            ]
+        ]);
+
+        $response->assertRedirect(route('orders.index'));
+
+        // Cek data pesanan tersimpan dengan status pending
+        $sale = Sale::where('user_id', $customer->id)->first();
+        $this->assertNotNull($sale);
+        $this->assertEquals('pending', $sale->status);
+        $this->assertEquals(450000, (int)$sale->total);
+        $this->assertEquals('Budi Santoso', $sale->customer_name);
+
+        // STOK BELUM BERKURANG (karena belum dikonfirmasi kasir)
+        $this->assertEquals(20, $product->fresh()->stock);
+    }
+
+    /**
+     * 13. Alur Kasir: Kasir mengonfirmasi pesanan user -> stok berkurang & status completed
+     */
+    public function test_cashier_can_confirm_pending_order_and_stock_is_decremented()
+    {
+        $customer = User::factory()->create(['role' => 'user', 'name' => 'Budi Santoso']);
+        $cashier = User::factory()->create(['role' => 'staff']);
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id'   => $category->id,
+            'stock'         => 20,
+            'selling_price' => 100000,
+        ]);
+
+        // 1. Customer buat pesanan
+        $this->actingAs($customer);
+        $this->post(route('orders.store'), [
+            'items' => [
+                ['product_id' => $product->id, 'quantity' => 4]
+            ]
+        ]);
+        $sale = Sale::where('user_id', $customer->id)->first();
+        $this->assertEquals('pending', $sale->status);
+        $this->assertEquals(20, $product->fresh()->stock);
+
+        // 2. Kasir konfirmasi pesanan
+        $this->actingAs($cashier);
+        $confirmResponse = $this->post(route('sales.confirm', $sale));
+        $confirmResponse->assertRedirect(route('sales.show', $sale));
+
+        // 3. Status selesai dan stok berkurang jadi 16 (20 - 4)
+        $this->assertEquals('completed', $sale->fresh()->status);
+        $this->assertEquals(16, $product->fresh()->stock);
+
+        // Movement audit record tersimpan
+        $this->assertDatabaseHas('stock_movements', [
+            'product_id' => $product->id,
+            'type'       => 'OUT',
+            'quantity'   => 4,
+        ]);
+    }
+
+    /**
+     * 14. Keamanan Privasi: User tidak bisa melihat rincian pesanan milik user lain
+     */
+    public function test_customer_cannot_view_other_customers_order()
+    {
+        $customerA = User::factory()->create(['role' => 'user', 'name' => 'User A']);
+        $customerB = User::factory()->create(['role' => 'user', 'name' => 'User B']);
+
+        $category = Category::factory()->create();
+        $product = Product::factory()->create(['category_id' => $category->id, 'stock' => 10, 'selling_price' => 50000]);
+
+        // Customer A pesan barang
+        $this->actingAs($customerA);
+        $this->post(route('orders.store'), [
+            'items' => [['product_id' => $product->id, 'quantity' => 1]]
+        ]);
+        $saleA = Sale::where('user_id', $customerA->id)->first();
+
+        // Customer B mencoba mengakses pesanan milik Customer A -> 403 Forbidden
+        $this->actingAs($customerB);
+        $forbiddenResponse = $this->get(route('orders.show', $saleA));
+        $forbiddenResponse->assertStatus(403);
+    }
 }

@@ -33,7 +33,7 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:50', 'unique:users,username'],
             'email'    => ['required', 'email', 'max:100', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
-            'role'     => ['required', Rule::in(['admin', 'staff'])],
+            'role'     => ['required', Rule::in(['admin', 'staff', 'user'])],
         ]);
 
         User::create([
@@ -58,7 +58,7 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:50', Rule::unique('users', 'username')->ignore($user->id)],
             'email'    => ['required', 'email', 'max:100', Rule::unique('users', 'email')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:6'],
-            'role'     => ['required', Rule::in(['admin', 'staff'])],
+            'role'     => ['required', Rule::in(['admin', 'staff', 'user'])],
         ]);
 
         $data = [
@@ -97,3 +97,4 @@ class UserController extends Controller
             ->with('success', 'Pengguna berhasil dihapus.');
     }
 }
+

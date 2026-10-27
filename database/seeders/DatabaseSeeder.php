@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Users (Admin/Owner dan Staff)
+        // 1. Seed Users (Admin/Owner, Staff Kasir, dan User/Pelanggan)
         $admin = User::firstOrCreate(
             ['email' => 'admin@inventory.com'],
             [
@@ -35,10 +35,20 @@ class DatabaseSeeder extends Seeder
         $staff = User::firstOrCreate(
             ['email' => 'staff@inventory.com'],
             [
-                'name'     => 'Staff Operasional',
+                'name'     => 'Staff Kasir',
                 'username' => 'staff',
                 'password' => Hash::make('staff123'),
                 'role'     => 'staff',
+            ]
+        );
+
+        $customerUser = User::firstOrCreate(
+            ['email' => 'user@inventory.com'],
+            [
+                'name'     => 'Budi (Pelanggan)',
+                'username' => 'user',
+                'password' => Hash::make('user123'),
+                'role'     => 'user',
             ]
         );
 
@@ -197,6 +207,7 @@ class DatabaseSeeder extends Seeder
         // 5. Seed Transaksi Pembelian Awal (Purchase Order)
         $pKb1 = $createdProducts['KB-001'];
         $pMs1 = $createdProducts['MS-001'];
+        $pAcc1 = $createdProducts['ACC-001'];
 
         $purchase1 = Purchase::firstOrCreate(
             ['purchase_number' => 'PO-202610-0001'],
@@ -226,17 +237,18 @@ class DatabaseSeeder extends Seeder
             'subtotal'   => 85000.00 * 10,
         ]);
 
-        // 6. Seed Transaksi Penjualan Awal (Kasir POS)
+        // 6. Seed Transaksi Penjualan Awal (Kasir POS Selesai)
         $pProt1 = $createdProducts['PROT-001'];
 
         $sale1 = Sale::firstOrCreate(
             ['sale_number' => 'INV-202610-0001'],
             [
-                'user_id'  => $staff->id,
-                'total'    => (450000 * 1) + (115000 * 1),
-                'status'   => 'completed',
-                'sold_at'  => now()->subDays(1),
-                'notes'    => 'Penjualan ritel keyboard & pelindung laptop',
+                'user_id'       => $staff->id,
+                'customer_name' => 'Pelanggan Umum (Walk-in)',
+                'total'         => (450000 * 1) + (115000 * 1),
+                'status'        => 'completed',
+                'sold_at'       => now()->subDays(1),
+                'notes'         => 'Penjualan kasir toko fisik',
             ]
         );
         SaleItem::firstOrCreate([
@@ -256,7 +268,36 @@ class DatabaseSeeder extends Seeder
             'subtotal'   => 115000.00 * 1,
         ]);
 
-        // 7. Audit Trail Riwayat Mutasi Stok
+        // 7. Seed Pesanan Pelanggan (Status Pending Menunggu Konfirmasi Kasir)
+        $pendingOrder = Sale::firstOrCreate(
+            ['sale_number' => 'ORD-202610-0001'],
+            [
+                'user_id'       => $customerUser->id,
+                'customer_name' => $customerUser->name,
+                'total'         => (175000 * 1) + (125000 * 1),
+                'status'        => 'pending',
+                'sold_at'       => now(),
+                'notes'         => 'Pesanan online: mohon disiapkan untuk diambil di toko',
+            ]
+        );
+        SaleItem::firstOrCreate([
+            'sale_id'    => $pendingOrder->id,
+            'product_id' => $pAcc1->id,
+        ], [
+            'quantity'   => 1,
+            'unit_price' => 175000.00,
+            'subtotal'   => 175000.00 * 1,
+        ]);
+        SaleItem::firstOrCreate([
+            'sale_id'    => $pendingOrder->id,
+            'product_id' => $pMs1->id,
+        ], [
+            'quantity'   => 1,
+            'unit_price' => 125000.00,
+            'subtotal'   => 125000.00 * 1,
+        ]);
+
+        // 8. Audit Trail Riwayat Mutasi Stok
         StockMovement::firstOrCreate([
             'product_id' => $pKb1->id,
             'user_id'    => $admin->id,

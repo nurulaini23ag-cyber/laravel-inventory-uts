@@ -12,6 +12,7 @@ class Sale extends Model
 
     protected $fillable = [
         'user_id',
+        'customer_name',
         'sale_number',
         'total',
         'status',
@@ -45,3 +46,4 @@ class Sale extends Model
         return $this->hasMany(SaleItem::class);
     }
 }
+

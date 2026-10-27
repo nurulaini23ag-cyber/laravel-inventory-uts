@@ -28,6 +28,13 @@
           @enderror
         </div>
         <div class="form-group">
+          <label class="form-label" for="customer_name">Nama Pelanggan / Pembeli</label>
+          <input type="text" name="customer_name" id="customer_name" class="form-control @error('customer_name') is-invalid @enderror" value="{{ old('customer_name', 'Pelanggan Umum') }}" placeholder="Contoh: Budi Santoso / Pelanggan Umum">
+          @error('customer_name')
+            <span class="invalid-feedback">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
           <label class="form-label" for="notes">Catatan Pelanggan / Invoice</label>
           <input type="text" name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" value="{{ old('notes') }}" placeholder="Contoh: Pesanan Pelanggan Toko Fisik">
           @error('notes')
@@ -189,3 +196,4 @@
   createRow();
 </script>
 @endsection
+

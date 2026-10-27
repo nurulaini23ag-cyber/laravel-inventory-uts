@@ -57,7 +57,7 @@
         <label class="form-label" for="role">Hak Akses (Role) <span style="color: #dc2626;">*</span></label>
         <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
           <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff (Hanya Pembelian &amp; Penjualan)</option>
-          <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin / Owner (Akses Penuh Seluruh Sistem)</option>
+          <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin / Owner (Akses Penuh Seluruh Sistem)</option>`r`n          <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User / Pelanggan (Hanya Pemesanan)</option>
         </select>
         @error('role')
           <span class="invalid-feedback">{{ $message }}</span>
@@ -102,9 +102,7 @@
               <td style="text-align: center;">
                 @if($user->isAdmin())
                   <span class="badge badge-danger">ADMIN</span>
-                @else
-                  <span class="badge badge-info">STAFF</span>
-                @endif
+                @elseif($user->isStaff())`r`n                  <span class="badge badge-info">STAFF</span>`r`n                @else`r`n                  <span class="badge badge-warning">USER</span>`r`n                @endif
               </td>
               <td style="text-align: center; font-size: 0.8125rem;">
                 <div>{{ $user->sales_count }} Penjualan</div>
@@ -136,3 +134,4 @@
   </div>
 </div>
 @endsection
+

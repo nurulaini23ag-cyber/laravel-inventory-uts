@@ -16,6 +16,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        if (auth()->check() && auth()->user()->isCustomer()) {
+            return redirect()->route('orders.index');
+        }
         $totalProducts = Product::count();
         $totalCategories = Category::count();
         $totalSuppliers = Supplier::count();
@@ -72,3 +75,4 @@ class DashboardController extends Controller
         ));
     }
 }
+
